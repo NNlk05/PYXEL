@@ -1,0 +1,5 @@
+<!ELEMENT game ANY>
+<!--TODO:  Change any-->
+
+<!ELEMENT room ANY>
+<!ATTLIST room from-file CDATA #IMPLIED>
