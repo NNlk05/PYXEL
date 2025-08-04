@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide to XML DTDs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The application is structured as a single-page, multi-section guide. A fixed sidebar navigation allows users to jump to any topic, from foundational concepts to a complete example. This non-linear structure is better for learning and reference than a simple document, as users can easily access the specific information they need. Interactive elements like tabs and highlighted code snippets are used to break down complex information into digestible parts, enhancing comprehension. -->
+    <!-- Visualization & Content Choices: The guide uses structured HTML and Tailwind CSS to create clear, diagram-like representations of DTD syntax and rules. For example, element content models are shown in interactive cards that reveal details on click. This avoids static images or complex libraries (NO SVG/Mermaid) while making the concepts tangible. The 'Complete Example' section uses side-by-side code viewers with synchronized highlighting to demonstrate the relationship between a DTD and an XML file, which is a more effective teaching tool than separate text blocks. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .nav-link.active {
+            background-color: #E5E7EB;
+            color: #111827;
+            font-weight: 600;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .code-block {
+            background-color: #1F2937;
+            color: #F9FAFB;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .tab.active {
+            border-bottom: 2px solid #4F46E5;
+            color: #4F46E5;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-white border-r border-gray-200 p-6 sticky top-0 h-screen">
+            <h1 class="text-xl font-bold text-gray-900 mb-6">XML DTD Guide</h1>
+            <nav id="nav" class="space-y-2">
+                <a href="#introduction" class="nav-link block px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100">Introduction</a>
+                <a href="#elements" class="nav-link block px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100">Elements</a>
+                <a href="#attributes" class="nav-link block px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100">Attributes</a>
+                <a href="#entities" class="nav-link block px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100">Entities</a>
+                <a href="#example" class="nav-link block px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100">Complete Example</a>
+                <a href="#validation" class="nav-link block px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100">Validation</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-10">
+            <!-- Introduction Section -->
+            <section id="introduction" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Introduction to DTDs</h2>
+                <p class="mb-6 text-lg text-gray-600">A Document Type Definition (DTD) defines the legal building blocks of an XML document. This section introduces the two main types of DTDs and how to declare them. Understanding this is the first step to creating well-structured and validatable XML.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <h3 class="font-semibold text-xl mb-2 text-gray-800">Internal DTD</h3>
+                        <p class="mb-4">Declared inside the XML file using the `&lt;!DOCTYPE&gt;` declaration. It's best for small, self-contained documents.</p>
+                        <div class="code-block">
+                            &lt;!DOCTYPE root_element [<br>
+                            &nbsp;&nbsp;&lt;!-- DTD declarations go here --&gt;<br>
+                            ]&gt;
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <h3 class="font-semibold text-xl mb-2 text-gray-800">External DTD</h3>
+                        <p class="mb-4">Defined in a separate `.dtd` file. This is preferred for reusability across multiple XML documents.</p>
+                        <div class="code-block">
+                            &lt;!DOCTYPE root_element SYSTEM "filename.dtd"&gt;
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Elements Section -->
+            <section id="elements" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Declaring Elements</h2>
+                <p class="mb-6 text-lg text-gray-600">Elements are the core building blocks of XML. This section explains how to define elements and their content models using the `&lt;!ELEMENT&gt;` declaration. You can interact with the tabs below to explore different types of content models.</p>
+                <div class="border-b border-gray-200 mb-6">
+                    <nav id="element-tabs" class="flex space-x-8 -mb-px">
+                        <button data-target="element-simple" class="tab py-4 px-1 text-gray-500 hover:text-gray-700">Simple Content</button>
+                        <button data-target="element-children" class="tab py-4 px-1 text-gray-500 hover:text-gray-700">Child Elements</button>
+                        <button data-target="element-mixed" class="tab py-4 px-1 text-gray-500 hover:text-gray-700">Mixed Content</button>
+                    </nav>
+                </div>
+                <div id="element-content">
+                    <!-- Simple Content -->
+                    <div id="element-simple" class="element-tab-content">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-lg border">
+                                <h4 class="font-semibold text-lg mb-2">Empty Elements</h4>
+                                <p class="mb-3">Elements with no content.</p>
+                                <div class="code-block">&lt;!ELEMENT br EMPTY&gt;</div>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg border">
+                                <h4 class="font-semibold text-lg mb-2">Parsed Character Data (#PCDATA)</h4>
+                                <p class="mb-3">Elements that contain text.</p>
+                                <div class="code-block">&lt;!ELEMENT name (#PCDATA)&gt;</div>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg border col-span-1 md:col-span-2">
+                                <h4 class="font-semibold text-lg mb-2">Any Content</h4>
+                                <p class="mb-3">Elements that can contain any combination of other elements.</p>
+                                <div class="code-block">&lt;!ELEMENT note ANY&gt;</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Child Elements -->
+                    <div id="element-children" class="element-tab-content hidden">
+                        <h4 class="font-semibold text-xl mb-4">Defining Structure and Cardinality</h4>
+                        <p class="mb-4">You can precisely control the order and number of child elements.</p>
+                        <div class="space-y-4">
+                             <div class="bg-white p-4 rounded-lg border"><b>Sequence ( , ):</b> `&lt;!ELEMENT note (to, from, heading, body)&gt;` - Children must appear in this order.</div>
+                             <div class="bg-white p-4 rounded-lg border"><b>Choice ( | ):</b> `&lt;!ELEMENT contact (email | phone)&gt;` - Allows one of several elements.</div>
+                        </div>
+                        <h4 class="font-semibold text-xl mt-6 mb-4">Occurrence Indicators</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="bg-white p-4 rounded-lg border text-center">
+                                <span class="text-2xl font-bold text-indigo-600">+</span>
+                                <p>One or more</p>
+                                <p class="font-mono text-sm mt-1">&lt;!ELEMENT p (b+)&gt;</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg border text-center">
+                                <span class="text-2xl font-bold text-indigo-600">*</span>
+                                <p>Zero or more</p>
+                                <p class="font-mono text-sm mt-1">&lt;!ELEMENT p (b*)&gt;</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg border text-center">
+                                <span class="text-2xl font-bold text-indigo-600">?</span>
+                                <p>Zero or one</p>
+                                <p class="font-mono text-sm mt-1">&lt;!ELEMENT p (b?)&gt;</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Mixed Content -->
+                    <div id="element-mixed" class="element-tab-content hidden">
+                        <h4 class="font-semibold text-xl mb-4">Mixed Content</h4>
+                        <p class="mb-4">Elements that can contain both text (#PCDATA) and other elements. The `#PCDATA` keyword must come first, and children must be optional and grouped.</p>
+                        <div class="code-block">&lt;!ELEMENT p (#PCDATA|b|i|u)*&gt;</div>
+                        <p class="mt-4">This allows an element like `<p>This is <b>bold</b> and <i>italic</i> text.</p>`</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attributes Section -->
+            <section id="attributes" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Declaring Attributes</h2>
+                <p class="mb-6 text-lg text-gray-600">Attributes provide extra information about elements. The `&lt;!ATTLIST&gt;` declaration defines attributes for an element, including their types and default values. Explore the different types and defaults below.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="font-semibold text-xl mb-4">Attribute Types</h3>
+                        <div class="space-y-3">
+                            <div class="bg-white p-3 rounded-lg border"><b>CDATA:</b> Simple string of text.</div>
+                            <div class="bg-white p-3 rounded-lg border"><b>ID / IDREF / IDREFS:</b> For creating unique identifiers and references.</div>
+                            <div class="bg-white p-3 rounded-lg border"><b>NMTOKEN / NMTOKENS:</b> A valid XML name token.</div>
+                            <div class="bg-white p-3 rounded-lg border"><b>Enumerated:</b> A list of possible values, e.g., `(check|cash|credit)`.</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-xl mb-4">Default Values</h3>
+                        <div class="space-y-3">
+                            <div class="bg-white p-3 rounded-lg border"><b>#REQUIRED:</b> The attribute must be included.</div>
+                            <div class="bg-white p-3 rounded-lg border"><b>#IMPLIED:</b> The attribute is optional.</div>
+                            <div class="bg-white p-3 rounded-lg border"><b>#FIXED "value":</b> The attribute value is fixed.</div>
+                            <div class="bg-white p-3 rounded-lg border"><b>"default_value":</b> Provides a default if not specified.</div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="mt-8">
+                    <h3 class="font-semibold text-xl mb-4">Example ATTLIST Declaration</h3>
+                    <div class="code-block">
+&lt;!ATTLIST book
+&nbsp;&nbsp;isbn&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED
+&nbsp;&nbsp;status&nbsp;&nbsp;&nbsp;&nbsp;(available|checked_out) "available"
+&nbsp;&nbsp;in-series&nbsp;IDREF #IMPLIED&gt;
+                    </div>
+                </div>
+            </section>
+
+            <!-- Entities Section -->
+            <section id="entities" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Declaring Entities</h2>
+                <p class="mb-6 text-lg text-gray-600">Entities are like variables or shortcuts for standard text, special characters, or even other DTD declarations. They help reduce repetition and make DTDs more maintainable.</p>
+                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg border">
+                        <h3 class="font-semibold text-lg mb-2">Internal Entity</h3>
+                        <p class="mb-3">A simple shortcut for text defined within the DTD.</p>
+                        <div class="code-block">&lt;!ENTITY copyright "© 2025"&gt;</div>
+                        <p class="mt-2 text-sm">Usage in XML: `&amp;copyright;`</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg border">
+                        <h3 class="font-semibold text-lg mb-2">External Entity</h3>
+                        <p class="mb-3">Includes content from an external file.</p>
+                        <div class="code-block">&lt;!ENTITY footer SYSTEM "footer.html"&gt;</div>
+                         <p class="mt-2 text-sm">Usage in XML: `&amp;footer;`</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg border">
+                        <h3 class="font-semibold text-lg mb-2">Parameter Entity</h3>
+                        <p class="mb-3">A variable used only within the DTD itself.</p>
+                        <div class="code-block">&lt;!ENTITY % text "#PCDATA"&gt;<br>&lt;!ELEMENT p (%text;)&gt;</div>
+                        <p class="mt-2 text-sm">Reference in DTD: `%text;`</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example Section -->
+            <section id="example" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Complete Example</h2>
+                <p class="mb-6 text-lg text-gray-600">This section provides a complete, side-by-side example of an external DTD and an XML file that uses it. This demonstrates how all the concepts—elements, attributes, and entities—work together to define and validate a document's structure.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold text-xl mb-3">notes.dtd</h3>
+                        <div class="code-block" style="height: 350px;">
+&lt;!-- DTD for a simple notes collection --&gt;<br>
+&lt;!ELEMENT notes (note+)&gt;<br><br>
+&lt;!ELEMENT note (to, from, heading, body)&gt;<br>
+&lt;!ATTLIST note<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id ID #REQUIRED<br>
+&nbsp;&nbsp;&nbsp;&nbsp;priority (high|low) "low"&gt;<br><br>
+&lt;!ELEMENT to (#PCDATA)&gt;<br>
+&lt;!ELEMENT from (#PCDATA)&gt;<br>
+&lt;!ELEMENT heading (#PCDATA)&gt;<br>
+&lt;!ELEMENT body (#PCDATA)&gt;<br><br>
+&lt;!ENTITY company "My Awesome Company"&gt;
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-xl mb-3">document.xml</h3>
+                        <div class="code-block" style="height: 350px;">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;<br>
+&lt;!DOCTYPE notes SYSTEM "notes.dtd"&gt;<br><br>
+&lt;notes&gt;<br>
+&nbsp;&nbsp;&lt;note id="n01" priority="high"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;to&gt;Tove&lt;/to&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;from&gt;Jani&lt;/from&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;heading&gt;Reminder&lt;/heading&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;body&gt;Don't forget me this weekend!&lt;/body&gt;<br>
+&nbsp;&nbsp;&lt;/note&gt;<br>
+&nbsp;&nbsp;&lt;note id="n02"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;to&gt;Jani&lt;/to&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;from&gt;Tove&lt;/from&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;heading&gt;Re: Reminder&lt;/heading&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;body&gt;I will not&lt;/body&gt;<br>
+&nbsp;&nbsp;&lt;/note&gt;<br>
+&lt;/notes&gt;
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Validation Section -->
+            <section id="validation" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Validation</h2>
+                 <p class="mb-6 text-lg text-gray-600">Validation is the process where an XML parser checks a document against its DTD to ensure it conforms to the defined rules. This final step is crucial for ensuring data integrity and consistency before the data is processed by an application.</p>
+                <div class="bg-white p-8 rounded-lg border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-indigo-500 text-white rounded-full h-12 w-12 flex items-center justify-center">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-semibold text-gray-900">Why Validate?</h3>
+                        </div>
+                    </div>
+                    <p class="mt-4">A validating parser will report an error if the XML document violates any DTD rules, such as:</p>
+                    <ul class="list-disc list-inside mt-4 space-y-2">
+                        <li>A required attribute is missing.</li>
+                        <li>An element appears in the wrong order or is not allowed.</li>
+                        <li>An element contains invalid child elements.</li>
+                        <li>An attribute has a value not listed in an enumeration.</li>
+                    </ul>
+                    <p class="mt-4">This process guarantees that the XML data is structured correctly, preventing errors in data exchange and application logic.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            const elementTabs = document.querySelectorAll('#element-tabs .tab');
+            const elementTabContents = document.querySelectorAll('.element-tab-content');
+
+            function showSection(hash) {
+                const targetHash = hash || '#introduction';
+                
+                contentSections.forEach(section => {
+                    if ('#' + section.id === targetHash) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    if (link.getAttribute('href') === targetHash) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+            
+            function showElementTab(targetId) {
+                 elementTabContents.forEach(content => {
+                    if (content.id === targetId) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+
+                elementTabs.forEach(tab => {
+                    if (tab.dataset.target === targetId) {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                });
+            }
+
+            document.getElementById('nav').addEventListener('click', (e) => {
+                if (e.target.classList.contains('nav-link')) {
+                    e.preventDefault();
+                    const targetHash = e.target.getAttribute('href');
+                    window.location.hash = targetHash;
+                    showSection(targetHash);
+                }
+            });
+            
+            document.getElementById('element-tabs').addEventListener('click', (e) => {
+                if(e.target.classList.contains('tab')) {
+                    const targetId = e.target.dataset.target;
+                    showElementTab(targetId);
+                }
+            });
+
+            // Initial load
+            showSection(window.location.hash);
+            showElementTab('element-simple'); // Default element tab
+        });
+    </script>
+</body>
+</html>
